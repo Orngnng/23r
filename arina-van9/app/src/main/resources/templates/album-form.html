@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${album.id != null ? 'Редактировать альбом' : 'Добавить альбом'}"></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button, .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <h1 th:text="${album.id != null ? 'Редактировать альбом' : 'Добавить новый альбом'}"></h1>
+    
+    <form th:action="${album.id != null ? '/albums/edit/' + album.id : '/albums/add'}" 
+          th:object="${album}" 
+          method="post">
+        
+        <label for="title">Название альбома:</label>
+        <input type="text" id="title" th:field="*{title}" required>
+        <div th:if="${#fields.hasErrors('title')}" class="error">
+            <p th:each="err : ${#fields.errors('title')}" th:text="${err}"></p>
+        </div>
+        
+        <label for="artist">Исполнитель:</label>
+        <input type="text" id="artist" th:field="*{artist}" required>
+        <div th:if="${#fields.hasErrors('artist')}" class="error">
+            <p th:each="err : ${#fields.errors('artist')}" th:text="${err}"></p>
+        </div>
+        
+        <label for="year">Год выпуска:</label>
+        <input type="number" id="year" th:field="*{year}" min="1900" max="2100" required>
+        <div th:if="${#fields.hasErrors('year')}" class="error">
+            <p th:each="err : ${#fields.errors('year')}" th:text="${err}"></p>
+        </div>
+        
+        <label for="genre">Жанр:</label>
+        <select id="genre" th:field="*{genre}" required>
+            <option value="">Выберите жанр</option>
+            <option th:each="g : ${genres}" th:value="${g}" th:text="${g}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('genre')}" class="error">
+            <p th:each="err : ${#fields.errors('genre')}" th:text="${err}"></p>
+        </div>
+        
+        <div class="buttons">
+            <button type="submit" th:text="${album.id != null ? 'Сохранить изменения' : 'Добавить'}"></button>
+            <a th:href="@{/albums}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</body>
+</html>
